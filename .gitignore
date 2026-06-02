@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.Python
+*.so
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor / OS cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Run outputs (descriptive names per SPEC §8) — keep them out of version control
+isotherm-*.csv
+run-summary-*.yaml
+occupancy-*.dump
+mc-driver-*.log
+
+# Large input artifacts that are provided externally, not committed
+*.eam.alloy
+*.meam
+POTDIR/
+*-10x10x10.data
+
+# local repo-setup helper (not part of the project)
+setup_repo.sh

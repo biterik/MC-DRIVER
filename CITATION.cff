@@ -1,0 +1,64 @@
+cff-version: 1.2.0
+message: "If you use MC-DRIVER in academic work, please cite it as below. If you improve the code, please report your changes back to the author (and, per the GPL-3.0 license, distribute derivative works under the same license)."
+title: "MC-DRIVER: a site-list Monte-Carlo driver (GC + VC-SGC) for hydrogen on the Ni/NiH octahedral sublattice, coupled to LAMMPS"
+abstract: >-
+  MC-DRIVER computes the relationship between the hydrogen chemical potential
+  and concentration on the octahedral interstitial sublattice of fcc Ni /
+  rock-salt NiH. It implements grand-canonical (GC) and variance-constrained
+  semi-grand-canonical (VC-SGC) Monte-Carlo sampling with energies supplied by
+  LAMMPS, and is validated against analytic (Langmuir) and exact-enumeration
+  benchmarks plus a Ni-H physical anchor.
+type: software
+authors:
+  - family-names: Bitzek
+    given-names: Erik
+    email: e.bitzek@mpi-susmat.de
+version: 0.1.0
+date-released: 2026-06-02
+license: GPL-3.0-or-later
+keywords:
+  - Monte Carlo
+  - grand canonical
+  - VC-SGC
+  - hydrogen
+  - nickel hydride
+  - LAMMPS
+  - atomistic simulation
+references:
+  - type: article
+    authors:
+      - family-names: Sadigh
+        given-names: Babak
+      - family-names: Erhart
+        given-names: Paul
+      - family-names: Stukowski
+        given-names: Alexander
+      - family-names: Caro
+        given-names: Alfredo
+      - family-names: Martinez
+        given-names: Enrique
+      - family-names: Zepeda-Ruiz
+        given-names: Luis
+    title: "Scalable parallel Monte Carlo algorithm for atomistic simulations of precipitation in alloys"
+    journal: "Physical Review B"
+    volume: 85
+    start: 184203
+    year: 2012
+    doi: 10.1103/PhysRevB.85.184203
+  - type: article
+    authors:
+      - family-names: Korbmacher
+        given-names: Dominik
+      - family-names: von Pezold
+        given-names: Johann
+      - family-names: Brinckmann
+        given-names: Steffen
+      - family-names: Neugebauer
+        given-names: Jörg
+    title: "Modeling of Phase Equilibria in Ni-H: Bridging the Atomistic with the Continuum Scale"
+    journal: "Metals"
+    volume: 8
+    issue: 4
+    start: 280
+    year: 2018
+    doi: 10.3390/met8040280

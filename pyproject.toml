@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nih-mc"
+version = "0.1.0"
+description = "Site-list Monte-Carlo driver (GC + VC-SGC) for H on Ni/NiH coupled to LAMMPS"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "GPL-3.0-or-later"
+authors = [{ name = "Erik Bitzek", email = "e.bitzek@mpi-susmat.de" }]
+keywords = ["monte-carlo", "vc-sgc", "hydrogen", "nickel-hydride", "lammps", "atomistic"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+]
+dependencies = ["numpy>=1.24", "pyyaml>=6.0"]
+
+[project.scripts]
+nih-mc = "nih_mc.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

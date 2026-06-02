@@ -1,0 +1,44 @@
+# Example run configuration for the MC driver (see MC-DRIVER-SPEC.md §9).
+# Copy and edit per run. Two examples shown as comments at the bottom.
+
+potential:
+  kind: eam                       # eam | meam
+  pair_style: eam/alloy
+  files: [ni_h_rcut4.90_rcut2.eam.alloy]
+  potdir: /cmmc/ptmp/biterik/POTENTIALS   # or a local copy for dev
+
+structure_full:  NiH-B1-10x10x10.data     # H positions = octahedral site list
+structure_empty: Ni-fcc-10x10x10.data
+start_from: full                 # full | empty
+
+ensemble: gc                     # gc | vcsgc
+backend: statics                 # statics | md_npt
+
+T_K: 300.0
+
+# --- GC: prescribe mu (on the LAMMPS-internal scale; calibrated in thread 02) ---
+mu_eV: -2.405
+
+# --- VC-SGC (used when ensemble: vcsgc) ---
+# delta_mu_eV: -2.40
+# c0: 0.5
+# kappa: 1.0e3
+
+n_blocks: 2000
+flips_per_block: 50
+
+# statics backend
+min_etol: 1.0e-8
+min_ftol: 1.0e-4
+
+# md_npt backend (used when backend: md_npt)
+# md_steps_equil: 2000
+# md_steps_sample: 2000
+
+seed: 12345
+out_prefix: isotherm-EAM-T300K-GC
+
+# Example A (unit test, no potential): set potential.kind to a built-in trivial
+#   site energy in code; ensemble gc; sweep mu_eV; compare to analytic Langmuir.
+# Example B (anchor): potential.kind eam, backend statics, start_from full,
+#   sweep mu_eV across [-2.5, -1.6]; reproduce Korbmacher mu(c).
