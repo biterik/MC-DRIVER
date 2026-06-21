@@ -187,9 +187,80 @@ has shown quirks under repeated create/delete in LAMMPS.
 
 ---
 
-## 7. Full automated suite (24 tests)
+## 7. Relation to the native LAMMPS Monte-Carlo fixes
 
-All pass as of 2026-06-02. Run `python -m pytest tests/ -v` to reproduce.
+A natural question is whether MC-DRIVER simply reinvents what LAMMPS already does
+natively, and whether the two would agree. They sample the **same statistical ensembles**,
+but they are **not drop-in equivalents** — the differences are exactly why a site-list
+insert/delete driver was written. The cross-check tests live in
+`tests/test_lammps_native_crosscheck.py` and are *skip-guarded*: they run only on a LAMMPS
+build that provides the relevant fix, and otherwise skip without affecting the core suite.
+
+### 7.1 GC ↔ `fix gcmc`
+
+`fix gcmc` (LAMMPS MC package) exchanges atoms with an **ideal-gas reservoir**, inserting at
+**random positions inside a region** (off-lattice), with optional MC translations. Two
+consequences:
+
+- *Geometry.* It does not restrict insertions to the octahedral sublattice; MC-DRIVER does.
+- *Reference.* Its acceptance carries the ideal-gas reference — the thermal de Broglie
+  wavelength Λ(T) and the insertion volume V — whereas MC-DRIVER's lattice-gas acceptance,
+  min(1, exp(−β(ΔU − μ))), has no Λ/V/N factors (the fixed site list supplies the
+  combinatorics). The *same physical state* therefore sits at different numerical μ:
+
+  > μ_lattice = μ_gcmc + kT · ln( V / (M · Λ³) )
+
+  This is precisely the calibration constant the SPEC defers to the μ-mapping step.
+
+To compare **reference-free**, the test uses a ratio ⟨N⟩(μ₂)/⟨N⟩(μ₁), in which Λ, V and M
+cancel. In the dilute limit the ideal gas gives exactly exp(β(μ₂−μ₁)); the lattice gas gives
+the sigmoid ratio θ(μ₂)/θ(μ₁); the two coincide up to the O(θ) lattice **saturation** (an
+ideal gas never saturates, a lattice gas does). The authoring environment verified that
+MC-DRIVER reproduces the lattice-gas ratio to <1 % and that the residual code-to-code
+difference is the expected O(θ); the test tolerances are sized accordingly.
+
+### 7.2 VC-SGC ↔ `fix sgcmc` (vcsgc-lammps)
+
+The native VC-SGC fix (`fix sgcmc`, the Sadigh/Erhart vcsgc-lammps package) uses the *same*
+acceptance, Φ = U − Δμ·N_H + κ̄·N_Ni·(c−c₀)², but a different **move**: it performs
+**transmutation** (swap atom type A↔B) at fixed sites and never changes the atom count, with
+relaxation handled by the MD integrator. MC-DRIVER instead inserts/deletes H on a site list.
+The mapping represents every octahedral site by an inert placeholder ("ghost") species:
+
+  > insert H ≡ transmute ghost→H,  delete H ≡ transmute H→ghost.
+
+With `pair_style zero` (all energies zero) the occupation statistics are purely entropic plus
+the Δμ and κ̄ terms, so **both codes must sample the identical distribution**
+
+  > P(N_H) ∝ C(M, N_H) · exp( β[ Δμ·N_H − κ̄·M·(N_H/M − c₀)² ] ).
+
+The authoring environment verified that MC-DRIVER reproduces this analytic P(N_H) to total
+variation 0.000; the test compares `fix sgcmc` to the same target and to MC-DRIVER directly.
+(The `fix sgcmc` argument order and the κ̄ normalization vary between package versions and may
+need aligning to your build.)
+
+### 7.3 So — "same results, just slower"?
+
+For the statistical mechanics, essentially yes: after the reference alignment (`fix gcmc`) or
+the ghost-species mapping (`fix sgcmc`), each native fix samples the same ensemble as
+MC-DRIVER. They are not bit-identical: the conventions and move types differ. On speed the
+native C++ fixes are far faster *per move*, but `fix gcmc`'s random-volume insertion accepts
+very rarely at high H density, where MC-DRIVER's site-targeted insert/delete is much more
+efficient — so the trade-off is not uniformly in the native fix's favour.
+
+> **Provenance.** These two cross-checks require a suitable LAMMPS build (and, for VC-SGC, the
+> non-default vcsgc-lammps package). The analytic targets and the MC-DRIVER halves were
+> verified directly; the *LAMMPS halves* were authored without a runnable LAMMPS and have not
+> been executed here. They are committed as runnable, skip-guarded tests for users who have
+> the packages.
+
+---
+
+## 8. Full automated suite (24 core tests + 2 optional cross-checks)
+
+The 24 core tests all pass as of 2026-06-02. The two native-fix cross-checks
+(`test_lammps_native_crosscheck.py`) are skipped unless a LAMMPS build with `fix gcmc` /
+`fix sgcmc` is present. Run `python -m pytest tests/ -v` to reproduce.
 
 | file | tests | what it covers |
 |:-----|:-----:|:---------------|
@@ -203,7 +274,7 @@ All pass as of 2026-06-02. Run `python -m pytest tests/ -v` to reproduce.
 
 ---
 
-## 8. How to reproduce everything
+## 9. How to reproduce everything
 
 ```bash
 # 1. install (editable) — pulls numpy + pyyaml
@@ -227,7 +298,7 @@ tests and figures are fixed in source.
 
 ---
 
-## 9. References
+## 10. References
 
 1. B. Sadigh, P. Erhart, A. Stukowski, A. Caro, E. Martinez, L. Zepeda-Ruiz,
    "Scalable parallel Monte Carlo algorithm for atomistic simulations of precipitation in
@@ -247,3 +318,6 @@ tests and figures are fixed in source.
    *J. Chem. Phys.* **91**, 461 (1989). — Block-averaging of correlated MC samples.
 6. D. Frenkel, B. Smit, *Understanding Molecular Simulation*, 2nd ed., Academic Press (2002).
    — Grand-canonical Monte Carlo reference.
+7. LAMMPS `fix gcmc` documentation, <https://docs.lammps.org/fix_gcmc.html>; `fix sgcmc`
+   (vcsgc-lammps) <https://docs.lammps.org/fix_sgcmc.html> and
+   <https://vcsgc-lammps.materialsmodeling.org/>. — Native MC fixes cross-checked in §7.

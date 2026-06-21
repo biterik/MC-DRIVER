@@ -12,10 +12,12 @@
 | 6. Finite-T NPT backend + blocking (§5b, §7) | ✅ code done | `LammpsNptBackend`; physical validation deferred to step 8 (needs a real potential) |
 | 7. VC-SGC + GC-overlap guard (§6, §10) | ✅ done | `nih_mc.mc.run_vcsgc`, both enumeration agreement and κ̄→0 GC equivalence verified |
 | 8. Real-world Korbmacher anchor (§10 test 3) | ⏸ blocked | needs the EAM file `ni_h_rcut4.90_rcut2.eam.alloy` and the RELAXED 10×10×10 structures from LLM-LMPS thread 01 |
+| 9. Native-fix cross-checks (GC↔`fix gcmc`, VC-SGC↔`fix sgcmc`) | ✅ written, ⏸ unrun | `tests/test_lammps_native_crosscheck.py`; analytic targets + MC-DRIVER halves verified, LAMMPS halves skip-guarded (need a LAMMPS build with the fixes / vcsgc-lammps). See `docs/VALIDATION.md` §7 |
 
 ## Acceptance-suite results (all from `pytest tests/`)
 
-23 tests, all passing:
+24 core tests passing, + 2 optional native-fix cross-checks (skipped unless LAMMPS provides
+`fix gcmc` / `fix sgcmc`):
 - **Langmuir (§10 test 1)**: 7 (μ, T, ε) points + extreme-μ guards on a 200-site lattice; |Δθ| < 0.02.
 - **Exact enumeration (§10 test 2)**: GC with attractive coupling on an 8-site ring; GC with repulsive coupling on a 12-site ring; VC-SGC matches its own enumeration on a 10-site ring; VC-SGC with κ̄=0 matches GC exactly (the SPEC's GC-overlap guard, in its mathematically exact form).
 - **Round-trip guards (§10/§12)**: trivial backend (insert+delete returns U and N to baseline); LAMMPS API end-to-end via `pair_style zero` on a 2×2×2 lattice (empty→insert→delete, reject path, full→delete→re-insert), all verifying that unrelaxed `run 0` energies after a create/delete cycle reproduce the pre-cycle energy to ≤1e-9 eV.

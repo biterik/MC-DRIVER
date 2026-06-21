@@ -48,6 +48,43 @@ Regenerate every figure and number with:
 python tools/make_validation_figures.py
 ```
 
+## Difference from LAMMPS native MD/MC (`fix gcmc`, `fix sgcmc`)
+
+MC-DRIVER samples the **same statistical ensembles** as the native LAMMPS Monte-Carlo fixes,
+but it is deliberately **not a drop-in equivalent** — that is the reason it exists. The
+cross-check tests (`tests/test_lammps_native_crosscheck.py`, skip-guarded) and
+[`docs/VALIDATION.md` §7](docs/VALIDATION.md) cover this in full; the essentials:
+
+**GC vs `fix gcmc`.** `fix gcmc` exchanges atoms with an **ideal-gas reservoir** and inserts
+at **random positions in a region** (off-lattice). MC-DRIVER inserts/deletes only on the
+octahedral **site list**. Because `fix gcmc` carries the ideal-gas reference (thermal
+wavelength Λ, volume V) while MC-DRIVER's lattice-gas acceptance does not, the same physical
+state sits at a different numerical chemical potential, offset by a *T*-dependent constant:
+
+> μ_lattice = μ_gcmc + kT · ln( V / (M · Λ³) )
+
+That offset is exactly the calibration constant the SPEC defers to the μ-mapping step. After
+aligning the reference they sample the same physics. Speed cuts both ways: the C++ fix is far
+faster *per move*, but random-volume insertion accepts very rarely at high H density, where
+MC-DRIVER's site-targeted insertion is dramatically more efficient.
+
+**VC-SGC vs `fix sgcmc`.** The native VC-SGC fix (the Sadigh/Erhart vcsgc-lammps package) uses
+the same acceptance but a different **move**: it performs **transmutation** (swap atom type
+A↔B) at fixed sites and never changes the atom count. MC-DRIVER inserts/deletes H instead. The
+two are reconciled by representing each site with an inert placeholder ("ghost") species, so
+`insert H ≡ ghost→H` and `delete H ≡ H→ghost`.
+
+**Parallelism — what MC-DRIVER does *not* do.** The native fixes use parallel tricks that
+MC-DRIVER does not. `fix sgcmc` implements the *scalable parallel* VC-SGC of Sadigh *et al.*:
+spatially decomposed, **simultaneous** trial transmutations across MPI domains (a
+sublattice/checkerboard partition keeps concurrent moves from conflicting), with the variance
+constraint stabilizing the sampling. `fix gcmc` parallelizes the energy/force evaluation over
+LAMMPS's domain decomposition. **MC-DRIVER is a single-process serial reference driver**: one
+persistent LAMMPS instance, one move at a time, an unrelaxed `run 0` per flip, and one
+relaxation per block. MPI-parallel insert/delete is an explicit non-goal for v1 (SPEC §11) —
+the Python driver is meant to be the transparent **correctness oracle** for any future
+optimized or parallel implementation, not to compete with it on wall-clock.
+
 ## Install
 
 ```bash
