@@ -1,12 +1,12 @@
 # biterik/MC-DRIVER — repo vitals
 
 ![stars](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbiterik%2FMC-DRIVER%2Fvitals%2Fbadge%2Fstars.json) ![views/week](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbiterik%2FMC-DRIVER%2Fvitals%2Fbadge%2Fviews-week.json) 
-_Updated 2026-11-27T12:43:26Z (UTC) · machine-readable: [VITALS.json](VITALS.json) · full history: [history.ndjson](history.ndjson) · daily snapshots: [snapshots/](snapshots/)_
+_Updated 2026-11-28T11:58:25Z (UTC) · machine-readable: [VITALS.json](VITALS.json) · full history: [history.ndjson](history.ndjson) · daily snapshots: [snapshots/](snapshots/)_
 
 | | |
 |---|---|
 | Repository created | 2026-06-02 |
-| Tracked by repo-vitals since | 2026-06-25 (156 days)³ |
+| Tracked by repo-vitals since | 2026-06-25 (157 days)³ |
 
 
 ## Summary
@@ -15,7 +15,7 @@ _Updated 2026-11-27T12:43:26Z (UTC) · machine-readable: [VITALS.json](VITALS.js
 |---|---:|---:|---:|
 | Views | 4 | 6 | 12 |
 | Unique visitors¹ | 4 | 6 | 10 |
-| Clones | 251 | 538 | 730 |
+| Clones | 249 | 538 | 731 |
 | Stars gained | 0 | 0 | 0 |
 | Release downloads gained | 0 | 0 | 0 |
 
@@ -23,14 +23,14 @@ _Updated 2026-11-27T12:43:26Z (UTC) · machine-readable: [VITALS.json](VITALS.js
 
 ## Since tracking began
 
-Everything recorded so far, from 2026-06-25 (156 days) — the total, and the same total expressed as an average rate.
+Everything recorded so far, from 2026-06-25 (157 days) — the total, and the same total expressed as an average rate.
 
 | Metric | Total | Average / 30 d |
 |---|---:|---:|
 | Views | 12 | 2.3 |
 | Unique visitors¹ | 10 | 1.9 |
-| Clones | 730 | 140.4 |
-| Unique cloners¹ | 514 | 98.8 |
+| Clones | 731 | 139.7 |
+| Unique cloners¹ | 515 | 98.4 |
 | Stars gained | 0 | 0.0 |
 | Release downloads gained | 0 | 0.0 |
 
@@ -39,14 +39,14 @@ Averages are the total divided by days tracked, times 30 — not a projection.
 ## Trends — last 30 days
 
 ```
-views  ▁▁▁▁▁█▁▅▁▁▁▁▁▅▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁·  (4 total)
-clones ▂▁▁▁▁▁▁▅▄▄▂▄▅▅▄▁▇▄▂▁▅▃▅▂▄▁▁█▅·  (251 total)
+views  ▁▁▁▁█▁▅▁▁▁▁▁▅▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁·  (4 total)
+clones ▁▁▁▁▁▁▅▄▄▂▄▅▅▄▁▇▄▂▁▅▃▅▂▄▁▁█▅▁·  (249 total)
 ```
 
 ('·' = day without data)
 
 Stars: **0** (+0 in 30 d, +0 in 7 d)
-**Conversion funnel (30 d):** 4 unique visitors → 160 unique cloners → 0 stars gained → 0 downloads gained
+**Conversion funnel (30 d):** 4 unique visitors → 159 unique cloners → 0 stars gained → 0 downloads gained
 
 
 ## Releases
@@ -73,7 +73,7 @@ Interactive dashboard: [index.html](index.html) on this branch (raw URLs don't
 render HTML — view it via GitHub Pages on the vitals branch, the repo-vitals
 hub, or locally: `git clone -b vitals … && python -m http.server`).
 A copy of this report named with the repo and today's date lives at
-[reports/biterik-MC-DRIVER-2026-11-27.md](reports/biterik-MC-DRIVER-2026-11-27.md)
+[reports/biterik-MC-DRIVER-2026-11-28.md](reports/biterik-MC-DRIVER-2026-11-28.md)
 — safe to download standalone.
 
 <sub>[repo-vitals](https://github.com/biterik/repo-vitals) by Erik Bitzek —
